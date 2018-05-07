@@ -21,8 +21,8 @@ class BinaryMinHeap(object):
 
     def is_empty(self):
         """Return True if this heap is empty, or False otherwise."""
-        # TODO: Check if empty based on how many items are in the list
-        # ...
+        # Check if empty based on how many items are in the list
+        return len(self.items) != 0
 
     def size(self):
         """Return the number of items in this heap."""
@@ -94,10 +94,12 @@ class BinaryMinHeap(object):
         # Get the parent's index and value
         parent_index = self._parent_index(index)
         parent_item = self.items[parent_index]
-        # TODO: Swap this item with parent item if values are out of order
-        # ...
-        # TODO: Recursively bubble up again if necessary
-        # ...
+        # Swap this item with parent item if values are out of order
+        if item < parent_item:
+            self.items[parent_index] = item
+            self.items[index] = parent_item
+        # Recursively bubble up again if necessary
+        self._bubble_up(parent_index)
 
     def _bubble_down(self, index):
         """Ensure the heap ordering property is true below the given index,
@@ -114,14 +116,22 @@ class BinaryMinHeap(object):
             return  # This index is a leaf node (does not have any children)
         # Get the item's value
         item = self.items[index]
-        # TODO: Determine which child item to compare this node's item to
-        child_index = 0
-        # ...
-        # TODO: Swap this item with a child item if values are out of order
+        # Determine which child item to compare this node's item to
+        if right_index > self.size() - 1:
+            child_index = left_index
+        elif self.items[left_index] > self.items[right_index]:
+            child_index = right_index
+        else:
+            child_index = left_index
+
         child_item = self.items[child_index]
-        # ...
-        # TODO: Recursively bubble down again if necessary
-        # ...
+        # Swap this item with a child item if values are out of order
+
+        if item > child_item:
+            self.items[child_index] = item
+            self.items[index] = child_item
+        # Recursively bubble down again if necessary
+        self._bubble_down(child_index)
 
     def _last_index(self):
         """Return the last valid index in the underlying array of items."""
