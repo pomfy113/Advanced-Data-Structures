@@ -30,7 +30,7 @@ class BinaryMinHeap(object):
 
     def insert(self, item):
         """Insert the given item into this heap.
-        TODO: Best case running time: ??? under what conditions?
+        Best case running time: O(1) on empty list
         TODO: Worst case running time: ??? under what conditions?"""
         # Insert the item at the end and bubble up to the root
         self.items.append(item)
@@ -126,7 +126,6 @@ class BinaryMinHeap(object):
 
         child_item = self.items[child_index]
         # Swap this item with a child item if values are out of order
-
         if item > child_item:
             self.items[child_index] = item
             self.items[index] = child_item
