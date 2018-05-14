@@ -57,29 +57,48 @@ class PriorityQueue(object):
         # Replace and return minimum item from heap
         return self.heap.replace_min((priority, item))
 
+class PriorityStack(object):
+    def __init__(self):
+        """Initialize stack."""
+        self.stack = PriorityQueue()
+
+    def __repr__(self):
+        """Return string rep of PriorityStack."""
+        return 'PriorityStack({} items, top of stack={})'.format(self.size(), self.front())
+
+    def size(self):
+        return self.stack.length()
+
+    def front(self):
+        return self.stack.front()[1]
+
+    def push(self, item):
+        self.stack.enqueue(item, -self.size())
+
+    def pop(self):
+        if self.size() == 0:
+            raise ValueError('Nothing here!')
+
+        return self.stack.dequeue()
+
+
 
 def test_priority_queue():
-    # Create a binary min heap of 7 items
-    items = PriorityQueue()
+    # items = PriorityQueue()
+    items = PriorityStack()
 
-    # items.enqueue('sleep', 5)
-    # items.enqueue('eh', 4)
-    # items.enqueue('Gotta do this', 2)
-    # items.enqueue('do that unimportant thing', 8)
-    # items.enqueue('do that important thing', 3)
-    #
-    # print(items.push_pop('I don\'t need this', 9))
-    # print(items.heap)
-    # print('======')
-    # print(items.push_pop('this is REALLY important', 1))
-    # print(items.heap)
-    #
-    # items.dequeue()
-    # print(items.heap)
-    # items.dequeue()
-    # print(items.heap)
-    # items.dequeue()
-    # print(items.heap)
+    items.push('fish')
+    print(items)
+    items.push('egg')
+    print(items)
+    items.push('bacon')
+    print(items)
+    items.pop()
+    print(items)
+    # Insert tests here
+
+
+
 
 if __name__ == '__main__':
     test_priority_queue()
