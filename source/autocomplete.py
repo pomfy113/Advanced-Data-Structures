@@ -1,95 +1,109 @@
 import sys, re, time, pickle, os
 
-class TrieNode(object):
+# Python program for insert and search
+# operation in a Trie
+
+class TrieNode:
+
+    # Trie node class
     def __init__(self):
-        self.children = [];
-        self.counter = 0;
+        self.children = [None]*27
+        self.end = False
 
-class ProtoTrie(object):
-    def __init__(self, items=None):
+class Trie:
+    # Trie data structure class
+    def __init__(self):
         self.root = self.getNode()
-
-    def __repr__(self):
-        return "Trie (WIP) - {}".format(self.root)
-
-    def _findIndex(self, item):
-        return ord(item) - ord('a')
 
     def getNode(self):
         return TrieNode()
 
-    def add(self, item):
-        if item.isalpha() == False:
-            return None
+    def _charToIndex(self,ch):
+        if(ch == '-'):
+            return 26
+        return ord(ch) - 97
+
+
+    def insert(self,key):
         node = self.root
-        length = len(item)
+        length = len(key)
         for level in range(length):
-            index = self._findIndex(item[level])
+            index = self._charToIndex(key[level])
+
             # if current character is not present
             if not node.children[index]:
                 node.children[index] = self.getNode()
             node = node.children[index]
 
         # mark last node as leaf
-        node.counter += 1
+        node.end = True
 
-    def find(self, item):
+    def search(self, key):
         node = self.root
-        length = len(item)
+        length = len(key)
         for level in range(length):
-            index = self._findIndex(item[level])
+            index = self._charToIndex(key[level])
             if not node.children[index]:
                 return False
+
             node = node.children[index]
 
-        return node != None and node.counter
+        return self.traverse(node, key)
+
+    def traverse(self, node, word, wordlist=[]):
+        if any(node.children):
+            for index, child in enumerate(node.children):
+                if child:
+                    newword = word + chr(index + 97)
+                    if child.end:
+                        wordlist.append(newword)
+                    self.traverse(child, newword, wordlist)
+            return wordlist
+        else:
+            if node.end:
+                return wordlist
+        # return True
 
 def get_words(filename):
+    list = []
     inputfile = open(filename).read()
-    return inputfile.split('\n')
+    for word in inputfile.split('\n')[:-1]:
+        list.append(word.replace(' ', ''))
+
+    return inputfile.split('\n')[:-1]
 
 def autocomplete(prefix):
-    # if os.path.exists('auto.p'):
-        # Trie = pickle.load( open( "auto.p", "rb" ) )
-    # else:
-    test = []
-    # words = get_words('/usr/share/dict/words')
-    words = get_words('./dictionarytest.txt')
+    if os.path.exists('auto.p'):
+        trie = pickle.load( open( "auto.p", "rb" ) )
+    else:
+        words = get_words('/usr/share/dict/words')
+        # words = get_words('./dictionarytest.txt')
+        trie = Trie()
 
-    #
-    Trie = ProtoTrie()
-    #
+        for word in words:
+            trie.insert(word.lower())
 
-    for word in words:
-        Trie.add(word.lower())
+        pickle.dump(trie, open( "auto.p", "wb" ))
 
-    print(Trie.find(prefix))
-    # for word in words:
-    #     if re.match(prefix, word):
-    #         test.append(word)
-    # print(re.match(prefix, words))
-    # for word in words:
-    #     if word.startswith(prefix):
-    #         test.append(word)
+    all_words = get_words('/usr/share/dict/words')
+    all_prefixes = set([word[:len(word)//2] for word in all_words])
+    time = benchmark(trie, all_prefixes)
+    print('Took {} seconds to benchmark {} prefixes on {} words'.format(time, len(all_prefixes), len(all_words)))
 
 
 
+def benchmark(trie, prefixes):
+    start_time = time.time()
+    print("Starting timer")
+    for prefix in prefixes:
+        trie.search(prefix.lower())
+    return (time.time() - start_time)
 
-    # pickle.dump(Trie, open( "auto.p", "wb" ))
-
-    # print(Trie.find(prefix))
-
-
-
-def benchmark(num_words):
-    autocomplete
-    pass
 
 def main():
     """Perform main function."""
     start_time = time.time()
     autocomplete(sys.argv[1])
-    print("--- %s seconds ---" % (time.time() - start_time))
 
     return
 
