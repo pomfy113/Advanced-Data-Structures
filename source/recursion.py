@@ -12,8 +12,8 @@ def fibonacci(n):
     # Implement fibonacci_recursive, _memoized, and _dynamic below, then
     # change this to call your implementation to verify it passes all tests
     # return fibonacci_recursive(n)
-    return fibonacci_memoized(n, [0, 1] + ([None] * (n-1)))
-    # return fibonacci_dynamic(n)
+    # return fibonacci_memoized(n, [0, 1] + ([None] * (n-1)))
+    return fibonacci_dynamic(n)
 
 
 def fibonacci_recursive(n):
@@ -37,7 +37,6 @@ def fibonacci_memoized(n, memo):
         # Call function recursively and add the results together
         memo[n] = fibonacci_memoized(n - 1, memo) + fibonacci_memoized(n - 2, memo)
         return memo[n]
-
     # Once implemented, change fibonacci (above) to call fibonacci_memoized
     # to verify that your memoized implementation passes all test cases
 
@@ -50,12 +49,12 @@ def fibonacci_dynamic(n):
     else:
         # I originally kept appending to a list with [1, 1], but why do that
         # When we can just keep adding variables up?
+
         num1 = 0
         num2 = 1
         for i in range(1, n):
             final = num1 + num2
-            num1 = num2
-            num2 = final
+            num1, num2 = num2, final
 
         return final
     # Once implemented, change fibonacci (above) to call fibonacci_dynamic

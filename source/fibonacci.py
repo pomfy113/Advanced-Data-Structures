@@ -1,10 +1,10 @@
-def memoize(f):
+def memoize(func):
     memo = {}
 
-    def helper(x):
-        if x not in memo:
-            memo[x] = f(x)
-        return memo[x]
+    def helper(arg):
+        if arg not in memo:
+            memo[arg] = func(arg)
+        return memo[arg]
 
     return helper
 
@@ -24,4 +24,4 @@ def fibonacci2(num):
     return fibo[num]
 
 print(fibonacci(120))
-print(fibonacci2(120))
+# print(fibonacci2(120))
