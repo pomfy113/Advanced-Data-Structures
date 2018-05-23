@@ -4,14 +4,13 @@ import sys, re, time, pickle, os
 # operation in a Trie
 
 class TrieNode:
-
-    # Trie node class
+    """Trie node class."""
     def __init__(self):
         self.children = {}
         self.end = False
 
 class Trie:
-    # Trie data structure class
+    "I'm Trie-ng."
     def __init__(self):
         self.root = self.getNode()
 
@@ -20,6 +19,7 @@ class Trie:
 
     def insert(self, word):
         node = self.root
+
         for char in word:
             if char not in node.children:
                 node.children[char] = self.getNode()
@@ -32,16 +32,18 @@ class Trie:
         wordlist = []
 
         for char in prefix:
+            # If we keep going and it's not in there, False
             if char not in node.children:
                 return False
             node = node.children[char]
         if node.end:
             wordlist.append(prefix)
 
+        # We got through the prefix; now we search for the ends
         return self.traverse(node, prefix, wordlist)
 
     def traverse(self, node, word, wordlist):
-        # If it has children, keeep going
+        # If it has children, keep going
         if any(node.children):
             # For every item in the children
             for key in node.children:
@@ -50,12 +52,13 @@ class Trie:
                 # If it's a proper word
                 if child.end:
                     wordlist.append(newword)
-                # Keep going!
+
+                # Regardless, keep going!
                 self.traverse(child, newword, wordlist)
-            return wordlist
-        # Else, just return the word list
-        else:
-            return wordlist
+        #     return wordlist
+        # else:
+        #     # END: just return the word list
+        return wordlist
 
 def get_words(filename):
     list = []
@@ -84,17 +87,17 @@ def autocomplete(prefix):
         # pickle.dump(all_words, open( "word.p", "wb") )
 
     all_prefixes = set([word[:len(word)//2] for word in all_words])
- #
+
     print("Dictionary build time: {} seconds".format(time.time() - start_time))
+    start_time = time.time()
+    print(trie.search(prefix))
+    print("Single item search time: {} seconds\n".format(time.time() - start_time))
 
     bench_time = benchmark(trie, all_prefixes)
     print('Took {} seconds to benchmark {} prefixes on {} words'.format(bench_time, len(all_prefixes), len(all_words)))
 
-
-
 def benchmark(trie, prefixes):
     start_time = time.time()
-    print("Starting timer")
     for prefix in prefixes:
         trie.search(prefix.lower())
     return (time.time() - start_time)
